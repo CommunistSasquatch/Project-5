@@ -6,40 +6,56 @@
 use 5.14.1;
 use warnings;
 
-my (@bestData);
+my (@data);
 use constant BESTDATAIN => "./ApgarMedicalBest.txt";
+use constant CUSHINGDATAIN => "./ApgarMedicalCushing.txt";
+use constant COLUMNS => 3;
 
 sub main {
-	@bestData = ([0],[0]);
-	bestDataIn();
-	printBestData();
+	@data = ([0],[0]);
+	dataIn();
+	printData();
 }
 
 main();
 
-sub bestDataIn {
+sub dataIn {
 	my $IN;
-	@bestData = ();
+	@data = ();
 	my $counter = 0;
 	open ($IN, '<', BESTDATAIN);
 	while (<$IN>) {
-		chomp ($bestData[$counter] = $_);
+		chomp ($data[$counter] = $_);
 		$counter++;
 	}
 	close $IN;
-}
-
-sub printBestData {
-	my $size = @bestData;
-	for (my $i = 0; $i < $size; $i++) {
-		print "\t$bestData[$i]\n";
+	open ($IN,'<', CUSHINGDATAIN);
+	while (<$IN>) {
+		chomp ($data[$counter] = $_);
+		$counter++;
 	}
 }
 
-sub sortBest {
-	my $size = @bestData;
-	my $temp = 0;
-	for (my $i; $i < $size; $i++) {
-		
+sub printData {
+	my $size = @data;
+	for (my $i = 0; $i < $size; $i++) {
+		print "\t$data[$i]\n";
+	}
+}
+
+sub sortData {
+	use constant YEAR => 2;
+	my $size = @data;
+	my @temp;
+	for (my $i = 0; $i < $size; $i++) {
+		my $j = $i;
+		while ($j > 0 && $data[$j][YEAR] < $data[$j - 1][YEAR]) {
+			for (my $k = 0; $k < COLUMNS; $k++) {
+				$temp[$k] = $data[$j][$k];
+				$data[$j][$k] = $data[$j - 1][$k];
+				$data[$j - 1][$k] = $temp[$k];
+			}
+			$j--;
+		}
 	}
 }
