@@ -17,8 +17,8 @@ sub main {
 	@years = ([0],[0]);
 	readDataIn();
 	populateYears();
-	printData();
-	#findYear();
+	findYear();
+	#printData();
 	dataOut();
 	
 }
@@ -26,32 +26,40 @@ sub main {
 main();
 
 sub populateYears {
-	@years = ();
-	my $size = @years;
+	my $size = @data;
 	for (my $i = 0; $i < $size; $i++){
-		$years[$i][0] = $data [$i][COLUMNS];
+		$years[$i][0] = $data[$i][2];
+		$years[$i][1] = 0;
 	}
 }
 
 sub findYear {
-	use constant YEAR_BORN => 3;
-	my $size = @data;
-	for (my $i = 0; $i < $size; $i++) {
-		if ($data[$i][YEAR_BORN] == $years[$i][0]){
-			$years[$i][1]++;
+	my $size = @years;
+	use constant YEAR => 2;
+	my @temp;
+	my $counter = 0;
+	for (my $i = 0; $i < $size; $i++){
+		if ($data[$i][YEAR] == $years[$counter][0]){
+			$years[$counter][1]++;
+		} else {
+			$counter++;
+			$years[$counter][0] = $data[$i][YEAR];
+			$years[$counter][1] = 1;
 		}
+		
 	}
 }
 
 sub dataOut {
-	my $size = @data;
+	my $size = @years;
 	my $OUT;
 	open ($OUT, ">>", SORTEDDATAOUT);
 	for (my $i = 0; $i < $size; $i++) {
-		print ($OUT $data[$i]);
+		print ($OUT $years[$i]);
 	}
 	close ($OUT);
 }
+
 
 
 sub readDataIn {
@@ -62,7 +70,7 @@ sub readDataIn {
 	open ($IN, '<', BESTDATAIN);
 	while (<$IN>) {
 		@tempData = split(/,/);
-		for (my $i = 0; $i < COLUMNS; $i++) {
+		for (my $i = 0; $i < COLUMNS; $i++){
 			chomp ($data[$counter][$i] = $tempData[$i]);
 		}
 		$counter++;
@@ -71,17 +79,17 @@ sub readDataIn {
 	open ($IN, '<', BESTDATAIN);
 	while (<$IN>) {
 		@tempData = split(/,/);
-		for (my $i = 0; $i < COLUMNS; $i++) {
+		for (my $i = 0; $i < COLUMNS; $i++){
 			chomp ($data[$counter][$i] = $tempData[$i]);
 		}
 	}
 }
 
 sub printData {
-	use constant ONE => 1;
-	my $size = @data;
-	for (my $i = 0; $i < $size; $i++) {
-		print "\t$data[$i][2]\n";
+	my $size = @years;
+	for (my $i = 0; $i < $size; $i++){
+		print "$years[$i][0] $years[$i][1]\n";
+		
 	}
 }
 
