@@ -13,12 +13,13 @@ use constant SORTEDDATAOUT => "./ApgarMedicalSORTED.txt";
 use constant COLUMNS => 3;
 
 sub main {
-	@data = ([0],[0]);
-	@years = ([0],[0]);
+	@data = ([],[]);
+	@years = ([],[]);
 	readDataIn();
+	sortData();
 	populateYears();
 	findYear();
-	#printData();
+	printData();
 	dataOut();
 	
 }
@@ -51,11 +52,14 @@ sub findYear {
 }
 
 sub dataOut {
-	my $size = @years;
+	my $size = @data;
 	my $OUT;
-	open ($OUT, ">>", SORTEDDATAOUT);
+	open ($OUT, ">", SORTEDDATAOUT);
 	for (my $i = 0; $i < $size; $i++) {
-		print ($OUT $years[$i]);
+		for (my $j = 0; $j < COLUMNS; $j++){
+			print ($OUT $data[$i][$j]);
+		}
+		
 	}
 	close ($OUT);
 }
@@ -76,20 +80,35 @@ sub readDataIn {
 		$counter++;
 	}
 	close $IN;
-	open ($IN, '<', BESTDATAIN);
+	open ($IN, '<', CUSHINGDATAIN);
 	while (<$IN>) {
 		@tempData = split(/,/);
 		for (my $i = 0; $i < COLUMNS; $i++){
 			chomp ($data[$counter][$i] = $tempData[$i]);
 		}
+		$counter++;
 	}
+	close $IN;
 }
 
 sub printData {
 	my $size = @years;
 	for (my $i = 0; $i < $size; $i++){
-		print "$years[$i][0] $years[$i][1]\n";
+		if ($years[$i][1] == 0){
+			$years[$i][1] = ();
+		} else {
+			print "$years[$i][0] $years[$i][1]\n";
+		}
 		
+		
+	}
+}
+
+sub printMemes {
+	my $size = @data;
+	for (my $i = 0; $i < $size; $i++){
+
+			print "$data[$i][2]\n";
 	}
 }
 
